@@ -12,6 +12,10 @@ import SuperAdminDashboard from "./pages/SuperAdminDashboard";
 import RestaurantDashboard from "./pages/RestaurantDashboard";
 import ScreenView from "./pages/ScreenView";
 import Unauthorized from "./pages/Unauthorized";
+import { AdminProvider } from "./contexts/AdminContext";
+import AdminRestaurants from "./pages/admin/AdminRestaurants";
+import AdminScreens from "./pages/admin/AdminScreens";
+import ScreenAssignment from "./pages/admin/ScreenAssignment";
 
 const queryClient = new QueryClient();
 
@@ -25,7 +29,7 @@ const App = () => (
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/unauthorized" element={<Unauthorized />} />
-            
+
             {/* Public Routes */}
             <Route path="/" element={<Index />} />
 
@@ -34,7 +38,39 @@ const App = () => (
               path="/admin"
               element={
                 <ProtectedRoute allowedRoles={['SUPER_ADMIN']}>
-                  <SuperAdminDashboard />
+                  <AdminProvider>
+                    <SuperAdminDashboard />
+                  </AdminProvider>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/restaurants"
+              element={
+                <ProtectedRoute allowedRoles={['SUPER_ADMIN']}>
+                  <AdminProvider>
+                    <AdminRestaurants />
+                  </AdminProvider>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/screens"
+              element={
+                <ProtectedRoute allowedRoles={['SUPER_ADMIN']}>
+                  <AdminProvider>
+                    <AdminScreens />
+                  </AdminProvider>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/screens/:id"
+              element={
+                <ProtectedRoute allowedRoles={['SUPER_ADMIN']}>
+                  <AdminProvider>
+                    <ScreenAssignment />
+                  </AdminProvider>
                 </ProtectedRoute>
               }
             />
@@ -53,8 +89,10 @@ const App = () => (
             <Route
               path="/screen"
               element={
-                <ProtectedRoute allowedRoles={['SCREEN']}>
-                  <ScreenView />
+                <ProtectedRoute allowedRoles={['SCREEN', 'SUPER_ADMIN']}>
+                  <AdminProvider>
+                    <ScreenView />
+                  </AdminProvider>
                 </ProtectedRoute>
               }
             />

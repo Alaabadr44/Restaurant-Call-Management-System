@@ -1,47 +1,45 @@
+import { api } from './api';
+
 export type Role = 'SUPER_ADMIN' | 'RESTAURANT' | 'SCREEN';
 
 export interface User {
   id: string;
-  username: string;
+  email: string;
   role: Role;
   name: string;
+  token?: string;
 }
 
-// Mock users for different roles
-const MOCK_USERS: Record<string, User> = {
-  admin: {
-    id: '1',
-    username: 'admin',
-    role: 'SUPER_ADMIN',
-    name: 'Super Administrator',
-  },
-  restaurant: {
-    id: '2',
-    username: 'restaurant',
-    role: 'RESTAURANT',
-    name: 'Restaurant Manager',
-  },
-  screen: {
-    id: '3',
-    username: 'screen',
-    role: 'SCREEN',
-    name: 'Kitchen Screen',
-  },
-};
-
 export const authService = {
-  login: async (username: string): Promise<User> => {
-    // Simulate API delay
-    await new Promise((resolve) => setTimeout(resolve, 500));
-
-    const user = MOCK_USERS[username];
-    if (!user) {
-      throw new Error('Invalid credentials');
+  login: async (email: string, password: string): Promise<User> => {
+    // Try API login first
+    try {
+      const response = await api.post('/auth/login', { email, password });
+      return {
+        id: response.user?.id || 'id',
+        email: response.user?.email || email,
+        name: response.user?.name || 'User',
+        role: response.user?.role || 'SUPER_ADMIN', // Defaulting for now if API structure varies
+        token: response.token,
+      };
+    } catch (error) {
+      console.log("API Login failed, trying mock fallback for dev...");
+      // Fallback for development if API is unreachable (optional, but good for stability during dev)
+      if (email === 'admin@example.com' && password === 'admin') {
+        return {
+          id: '1',
+          email: 'admin@example.com',
+          name: 'Super Admin',
+          role: 'SUPER_ADMIN',
+          token: 'mock-token-admin'
+        };
+      }
+      throw error;
     }
-    return user;
   },
 
   logout: async (): Promise<void> => {
-    await new Promise((resolve) => setTimeout(resolve, 200));
+    // Invalidate token if needed, or just clear client side
+    return Promise.resolve();
   },
 };

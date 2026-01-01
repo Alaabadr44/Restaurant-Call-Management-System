@@ -7,7 +7,8 @@ import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 
 const Login = () => {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const { login } = useAuth();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
@@ -16,10 +17,10 @@ const Login = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      await login(username);
+      await login(email, password);
       toast({
         title: "Login Successful",
-        description: `Welcome back, ${username}!`,
+        description: `Welcome back!`,
       });
     } catch (error) {
       toast({
@@ -37,17 +38,29 @@ const Login = () => {
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle>Welcome Back</CardTitle>
-          <CardDescription>Enter your username to access your dashboard</CardDescription>
+          <CardDescription>Enter your email and password to access your dashboard</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="username">Username</Label>
+              <Label htmlFor="email">Email</Label>
               <Input
-                id="username"
-                placeholder="admin, restaurant, or screen"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                id="email"
+                type="email"
+                placeholder="admin@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="password">Password</Label>
+              <Input
+                id="password"
+                type="password"
+                placeholder="••••••••"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 required
               />
             </div>
@@ -55,11 +68,9 @@ const Login = () => {
               {loading ? "Logging in..." : "Login"}
             </Button>
             <div className="text-sm text-center text-muted-foreground mt-4">
-              <p>Demo Credentials:</p>
+              <p>Common Credentials:</p>
               <ul className="mt-2 space-y-1">
-                <li>Super Admin: <strong>admin</strong></li>
-                <li>Restaurant: <strong>restaurant</strong></li>
-                <li>Screen: <strong>screen</strong></li>
+                <li>Super Admin: <strong>admin@example.com / admin</strong></li>
               </ul>
             </div>
           </form>

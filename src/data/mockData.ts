@@ -13,6 +13,11 @@ export interface Restaurant {
   hoursEn: string;
   hoursAr: string;
   status: 'available' | 'busy';
+  // API additional fields
+  email?: string;
+  password?: string;
+  contactPhone?: string;
+  sipExtension?: string;
 }
 
 // Menu images imported from assets
@@ -85,5 +90,26 @@ export const mockRestaurants: Restaurant[] = [
     hoursEn: '12:00 PM - 2:00 AM',
     hoursAr: '١٢:٠٠ ظهراً - ٢:٠٠ صباحاً',
     status: 'available',
+  },
+];
+
+export interface Screen {
+  id: string;
+  name: string;
+  assignedRestaurants: string[]; // Restaurant IDs in order
+  gridConfig: {
+    rows: number;
+    columns: number;
+  };
+  showLanguage: 'en' | 'ar' | 'both';
+}
+
+export const mockScreens: Screen[] = [
+  {
+    id: '1',
+    name: 'Main Hall',
+    assignedRestaurants: ['1', '2', '3', '4'],
+    gridConfig: { rows: 2, columns: 2 },
+    showLanguage: 'both',
   },
 ];

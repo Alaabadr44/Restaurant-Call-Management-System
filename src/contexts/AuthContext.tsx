@@ -6,7 +6,7 @@ interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  login: (username: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
 }
 
@@ -26,12 +26,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setIsLoading(false);
   }, []);
 
-  const login = async (username: string) => {
+  const login = async (email: string, password: string) => {
     try {
-      const user = await authService.login(username);
+      const user = await authService.login(email, password);
       setUser(user);
       localStorage.setItem('user', JSON.stringify(user));
-      
+
       // Redirect based on role
       switch (user.role) {
         case 'SUPER_ADMIN':
